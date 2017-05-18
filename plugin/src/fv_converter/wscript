@@ -12,6 +12,11 @@ def options(opt):
                  default=False,
                  help='build ux feature plugin')
 
+  opt.add_option('--enable-word2vec',
+                action='store_true',
+                default=False,
+                help='build word2vec feature plugin')
+
   opt.add_option('--enable-opencv',
                 action='store_true',
                 default=False,
@@ -98,6 +103,16 @@ def build(bld):
       vnum = bld.env['ABI_VERSION'],
       )
     make_test(bld, 'ux_splitter', 'ux_splitter_test.cpp')
+
+  if 'HAVE_WORD2VEC' in bld.env.define_key:
+    bld.shlib(
+      source = 'word2vec.cpp',
+      target = 'word2vec',
+      install_path = bld.env['JUBATUS_PLUGIN_DIR'],
+      use = 'WORD2VEC JUBATUS_CORE server_headers',
+      vnum = bld.env['ABI_VERSION']
+      )
+    make_test(bld, 'word2vec', 'word2vec_test.cpp')
 
   if 'HAVE_OPENCV' in bld.env.define_key:
     bld.shlib(
